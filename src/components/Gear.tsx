@@ -9,7 +9,6 @@ import { BoxGeometry, Group, Vector3 } from 'three'
 type GearProps = {
   numTeeth?: number
   initialRotation?: number
-  angularDirection?: 'clockwise' | 'counterClockwise'
   position?: Vector3
 }
 
@@ -17,18 +16,7 @@ function Gear({
   numTeeth = 26,
   position = new Vector3(0, 0, 0),
   initialRotation = 0,
-  angularDirection = 'clockwise',
 }: GearProps) {
-  const ref = useRef<Group>(null)
-
-  useFrame((_, delta) => {
-    // Spin the gear at 3 degrees per second
-    if (ref.current) {
-      const angle = 3 * (Math.PI / 180) * delta
-      ref.current.rotateZ(angularDirection === 'clockwise' ? -angle : angle)
-    }
-  })
-
   const pitchDiameter = 8 // TODO: calculate based on numTeeth
   const radius = pitchDiameter / 2
   const angle = (360 / numTeeth) * (Math.PI / 180)
@@ -47,7 +35,7 @@ function Gear({
   }, [numTeeth, radius])
 
   return (
-    <group ref={ref} position={position} rotation-z={(angle / 2) * initialRotation}>
+    <group position={position} rotation-z={(angle / 2) * initialRotation}>
       <Cylinder radius={radius} />
       {teeth.map((tooth) => tooth)}
     </group>
@@ -69,16 +57,6 @@ function Cylinder({ radius }: CylinderProps) {
 
   return (
     <mesh rotation-x={Math.PI / 2}>
-      {/*
-      radiusTop : Float,
-      radiusBottom : Float,
-      height : Float,
-      radialSegments : Integer,
-      heightSegments : Integer,
-      openEnded : Boolean,
-      thetaStart : Float,
-      thetaLength : Float
-    */}
       {geometry}
       <meshStandardMaterial color='orange' />
     </mesh>
